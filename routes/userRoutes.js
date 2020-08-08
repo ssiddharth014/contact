@@ -41,7 +41,27 @@ router.post('/signup',async (req,res)=>{
 	}
 })
 
+router.get('/info/:id',async(req,res)=>{
+	try{
+		const Current= await User.findOne({_id:req.params.id})
+		if(Current)
+		{
 
+
+
+
+			return res.send({Current})
+		}
+		else{
+			return res.send({"msg":"No such user"})
+		}
+
+	}
+	catch(err)
+	{
+		res.send({"err":err.msg})
+	}
+})
 router.post('/login',async(req,res)=>{
 	try{
 		const loginUser = await User.findOne({email:req.body.values.email,
@@ -112,15 +132,14 @@ router.get('/contact/:id',async(req,res)=>{
 
 
 router.get('/delete/:id1/:id2',async(req,res)=>{
-	console.log("e")
-	console.log(req.params.id1,req.params.id2)
+	
 	try{
 		const user= await User.findOne({_id:req.params.id1})
 		if (user)
 		{
-			console.log(user)
+			
 			const updatecontact= await user.contacts.splice(req.params.id2,1)
-			console.log(user.contacts)
+			
 			user.contacts.sort()
 			await user.save()
 			return res.send({"status":201,"contacts":user.contacts})
@@ -144,7 +163,7 @@ router.put('/edit/:id1/:id2',async(req,res)=>{
 		if (user)
 		{
 
-			console.log("r",req.body.name)
+			
 
 			  user.contacts[req.params.id2].name=req.body.name
 			user.contacts[req.params.id2].number=req.body.number
